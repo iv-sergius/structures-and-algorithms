@@ -1,0 +1,20 @@
+PROGRAM Hello(INPUT, OUTPUT);
+BEGIN
+  WRITELN('Hello world!');
+END;
+PROGRAM Hello(INPUT, OUTPUT);
+BEGIN
+  WRITELN('Hello world!');
+END;
+PROGRAM Hello(INPUT, OUTPUT);
+BEGIN
+  WRITELN('Hello world!');
+END;
+PROGRAM Hello(INPUT, OUTPUT);
+BEGIN
+  WRITELN('Hello world!');
+END;
+PROGRAM Hello(INPUT, OUTPUT);
+BEGIN
+  WRITELN('Hello world!');
+END
