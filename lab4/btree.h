@@ -1,14 +1,18 @@
+#include <stdbool.h>
+#include <stddef.h>
 
-struct Node
+struct BNode
 {
     bool isLeaf;
     size_t n;
-    int data;
-    struct Node *childen;
-}
+    int * data;
+    struct BNode *childen;
+};
+typedef struct BNode SBNode;
 
 struct BTree
 {
-    size_t t;
-    struct Node *root;
-}
+    const size_t t;
+    SBNode *root;
+};
+typedef struct BTree SBtree;

@@ -2,9 +2,9 @@ CC = gcc
 CFLAGS = -g
 LDFLAGS =
 
-PROG = lab4.out
-HDRS = btree.h
-SRCS = main.c btree.c
+PROG = lab3.out
+HDRS = graph.h
+SRCS = main.c graph.c
 
 # Object file from each source
 OBJS = $(SRCS:.c=.o)
@@ -15,9 +15,9 @@ $(PROG) : $(OBJS)
 
 # Rules for each file
 
-main.o : main.c btree.h
+main.o : main.c graph.h
 
-btree.o: btree.c btree.h
+graph.o: graph.c graph.h
 
 # Remove program and object file
 clean:
