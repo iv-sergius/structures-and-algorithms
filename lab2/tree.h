@@ -1,11 +1,19 @@
-struct tree
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdio.h>
+#include "queue.h"
+
+struct Tree
 {
-    long size;
-    long *nChildren;
-    long *firstChildren;
-    long *childrens; 
+    size_t size;
+    size_t *nChildren;
+    size_t *firstChildren;
+    size_t *relations;
 };
+typedef struct Tree STree;
 
-readTreeFromFile();
+bool setNewTree(STree * tree, size_t size);
 
+bool readTreeFromFile(STree *tree, const char *fileName);
 
+bool findTreeCenter(STree tree, SQueue *answer);

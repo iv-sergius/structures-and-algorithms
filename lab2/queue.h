@@ -1,16 +1,33 @@
-struct qNode_s
+#ifndef _QUEUE_H
+#define _QUEUE_H
+
+#include <stdbool.h>
+
+struct QueueNode
 {
-    struct qNode_s *next,
-    struct qNode_s *prev,
-    data long
-}
+    struct QueueNode *next;
+//    struct qNode_s *prev;
+    long data;
+};
+typedef struct QueueNode SQueueNode;
 
-typedef struct qNode_s qNode;
-
-struct Queue_s
+struct Queue
 {
-    struct qNode_s *head,
-    struct qNode_s *tail
-} Queue_default = {NULL, NULL}
+    SQueueNode *head;
+    SQueueNode *tail;
+};
+typedef struct Queue SQueue;
 
-typedef struct Queue_s Queue;
+// push to end
+bool pushToQueue(SQueue *q, long dataToTail);
+
+// pop from head
+bool popFromQueue(SQueue *q, long *dataFromHead);
+
+bool isEmpty(SQueue *q);
+
+void setNewQueue(SQueue *q);
+
+void erase(SQueue *q);
+
+#endif

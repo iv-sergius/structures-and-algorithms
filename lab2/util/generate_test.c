@@ -1,5 +1,19 @@
 #include <stdio.h>
 
+void generateTree1(long nNodes)
+{
+    printf("%ld\n", nNodes);
+    if (nNodes > 1) {
+        printf("%ld %ld\n", 0, 1);
+    }
+    if (nNodes > 2) {
+        printf("%ld %ld\n", 0, 2);
+    }
+    for (int i = 0; i < nNodes; ++i) {
+        printf("%ld %ld\n", 0, 2);
+    }
+}
+
 void generateTree(long nNodes, long nTreads, float rampfyFrequency)
 {
     // printf("%ld\n", nNodes);
