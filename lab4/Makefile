@@ -3,8 +3,8 @@ CFLAGS = -g
 LDFLAGS =
 
 PROG = lab4.out
-HDRS = btree.h
-SRCS = main.c btree.c
+HDRS = btree.h queue.h
+SRCS = main.c btree.c queue.c
 
 # Object file from each source
 OBJS = $(SRCS:.c=.o)
@@ -18,6 +18,8 @@ $(PROG) : $(OBJS)
 main.o : main.c btree.h
 
 btree.o: btree.c btree.h
+
+queue.o: queue.c queue.h btree.h
 
 # Remove program and object file
 clean:
