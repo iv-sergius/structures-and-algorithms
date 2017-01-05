@@ -15,5 +15,6 @@ int main(int argv, char *argc[])
 	};
     printf("%zu\n", debts.n);
     PrintGraph(&debts);
+    RelifGraph(&debts);
     return 0;
 }

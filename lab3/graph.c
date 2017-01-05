@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include "graph.h"
 
-int**AllocMatrix(size_t n)
+int**AllocMatrixInt(size_t n)
 {
 	int **matrix = NULL;
     matrix = (int **)calloc(n, sizeof(int*));
@@ -20,6 +20,16 @@ int**AllocMatrix(size_t n)
 		}
 	}
 	return matrix;
+}
+
+void FreeMatrixInt(int ** matrix, size_t n)
+{
+	for (size_t i = 0; i < n; ++i)
+	{
+		free(matrix[i]);
+	}
+	free(matrix);
+	*matrix = NULL;	
 }
 
 bool ReadGraphFromFile(SGraph *graph, const char * fileName)
@@ -42,7 +52,7 @@ bool ReadGraphFromFile(SGraph *graph, const char * fileName)
 	}
     graph->n = n;
     // try alloc memory
-    graph->adjacency = AllocMatrix(n);
+    graph->adjacency = AllocMatrixInt(n);
     // read data
     size_t from, to;
     int weight;
@@ -66,27 +76,77 @@ void PrintGraph(const SGraph *graph)
 	printf("Total amount of all debts %d\n", sum);
 }
 
-
+bool IsEdge(SGraph *graph, size_t from, size_t to)
+{
+	return graph->adjacency[from][to] > 0;
+}
 
 bool RelifGraph(SGraph *graph)
 {
-	size_t * stack = (size_t*)calloc(graph->n, sizeof(size_t));
+	size_t n = graph->n;
+	size_t * stack = (size_t*)malloc((n +1) * sizeof(size_t));
 	if (stack == NULL) {
 	    fprintf(stderr, "Error: can't allocate memory\n");
         return false;
     }
-    for (size_t i = 0; i < graph->n; ++i) stack[i] = -1;
-    stack[0] = 0;
-    level = 0;
-    // find circle
-    bool isCircle = false
-    while (!isCircle) {
-		// find next vertex
-		for (size_t to = stack[0] + 1; (to < graph->n) 
-			&& (graph->adjacency[stack[level][to]  0); ++i );
-		if()
-		// if don't find go on top
-		// else check for circle
+    for (size_t i = 0; i < n + 1; ++i) stack[i] = -1;
+
+	bool * wasVertex = (bool*)malloc((n) * sizeof(bool));
+	if (wasVertex == NULL) {
+	    fprintf(stderr, "Error: can't allocate memory\n");
+        return false;
+    }
+    for (size_t i = 0; i < n; ++i) wasVertex[i] = false;
+
+    int level = 0;
+    stack[level] = 0;
+    size_t to;
+	for (size_t firstVertex = 0; firstVertex < n; ++firstVertex)
+	{
+		stack[0] = firstVertex;
+		level = 1;
+		while (level > 0) {
+			if (stack[level] == -1){ 
+				// first time on this level
+				to = firstVertex;
+			} else {
+				// was on this level, so start from previous vertex
+				wasVertex[stack[level]] = false;
+				to = stack[level] + 1;
+			}
+			while (to < n && !(IsEdge(graph, stack[level - 1], to) && !wasVertex[to])) {
+				++to;
+			}
+			if (to == n) { // no more child
+				// go up
+				stack[level] = -1;
+				--level;
+			} else 	{ // find vertex 
+				stack[level] = to;
+				wasVertex[to] = true;
+				if (to == firstVertex) {
+					wasVertex[to] = false;
+for (size_t j = 0; j < level; ++j) {
+	printf("%zu ", stack[j]);
+}
+printf(" cicle, level = %d\n", level);					
+				} else { // no cirle
+					// try go deep
+/*
+for (size_t j = 0; j <= level; ++j) {
+	printf("%zu ", stack[j]);
+}
+printf(" step, level = %d\n", level);					
+*/
+					if (level == n) {
+						wasVertex[stack[level]] = false;
+						stack[level] = -1;
+						--level;
+					} else {
+						++level;
+					}
+				}
+			}			
+		}
 	}
-    // relif
 }
