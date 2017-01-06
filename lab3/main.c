@@ -1,5 +1,8 @@
-#include "graph.h"
 #include <stdio.h>
+#include <iostream>
+#include <vector>
+#include "graph.h"
+#include "cycle.h"
 
 int main(int argv, char *argc[])
 {
@@ -12,9 +15,27 @@ int main(int argv, char *argc[])
     SGraph debts;
     if(!ReadGraphFromFile(&debts, argc[1])) {
 		return 1;
-	};
-    printf("%zu\n", debts.n);
+	}; 
     PrintGraph(&debts);
-    RelifGraph(&debts);
-    return 0;
+    CycleStore store;
+    FindCycles(&debts, store);
+	size_t cycleNumber;
+	do {
+		PrintStore(store);
+		std::cout << std::endl << "Chose cycle for relief > ";
+input:
+		if (!(std::cin >> cycleNumber)) {
+			std::cout << "Incorrect value try again > ";
+			goto input;
+		}
+		if (cycleNumber >= store.size()) {
+			std::cout << "Incorrect value try again > ";
+			goto input;
+		}
+		ReliefGraph(&debts, store[cycleNumber]);
+		PrintGraph(&debts);
+		store = CycleStore();
+		FindCycles(&debts, store);
+	} while (!store.empty());
+	
 }

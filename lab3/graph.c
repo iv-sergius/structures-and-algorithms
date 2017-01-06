@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "graph.h"
+#include "cycle.h"
 
 int**AllocMatrixInt(size_t n)
 {
@@ -81,7 +82,7 @@ bool IsEdge(SGraph *graph, size_t from, size_t to)
 	return graph->adjacency[from][to] > 0;
 }
 
-bool RelifGraph(SGraph *graph)
+bool FindCycles(SGraph *graph, CycleStore &store)
 {
 	size_t n = graph->n;
 	size_t * stack = (size_t*)malloc((n +1) * sizeof(size_t));
@@ -105,15 +106,15 @@ bool RelifGraph(SGraph *graph)
 	{
 		stack[0] = firstVertex;
 		level = 1;
-		while (level > 0) {
-			if (stack[level] == -1){ 
-				// first time on this level
+		while (level > 0) {// until return to stack's head
+			if (stack[level] == -1){ // first time on this level
 				to = firstVertex;
-			} else {
-				// was on this level, so start from previous vertex
+			} else { // was on this level
+				// so start from previous vertex
 				wasVertex[stack[level]] = false;
 				to = stack[level] + 1;
 			}
+			// try find next vertex
 			while (to < n && !(IsEdge(graph, stack[level - 1], to) && !wasVertex[to])) {
 				++to;
 			}
@@ -124,20 +125,11 @@ bool RelifGraph(SGraph *graph)
 			} else 	{ // find vertex 
 				stack[level] = to;
 				wasVertex[to] = true;
-				if (to == firstVertex) {
+				if (to == firstVertex) { // find circle
 					wasVertex[to] = false;
-for (size_t j = 0; j < level; ++j) {
-	printf("%zu ", stack[j]);
-}
-printf(" cicle, level = %d\n", level);					
-				} else { // no cirle
+					store.push_back(Cycle(stack, stack + level));
+				} else { // no cycle
 					// try go deep
-/*
-for (size_t j = 0; j <= level; ++j) {
-	printf("%zu ", stack[j]);
-}
-printf(" step, level = %d\n", level);					
-*/
 					if (level == n) {
 						wasVertex[stack[level]] = false;
 						stack[level] = -1;
@@ -149,4 +141,27 @@ printf(" step, level = %d\n", level);
 			}			
 		}
 	}
+	free(wasVertex);
+	free(stack);
 }
+
+void FreeGraph(SGraph *g)
+{
+	FreeMatrixInt(g->adjacency, g->n);
+	free(g);
+	g = NULL;
+}
+
+void ReliefGraph(SGraph *graph, const Cycle &cycle)
+{
+	size_t minimum = graph->adjacency[cycle.back()][cycle.front()];
+	for (size_t i = 1; i < cycle.size(); ++i) {
+		minimum = (graph->adjacency[cycle[i - 1]][cycle[i]] < minimum) ? 
+			graph->adjacency[cycle[i - 1]][cycle[i]] : minimum;
+	}
+	graph->adjacency[cycle.back()][cycle.front()] -= minimum;
+	for (size_t i = 1; i < cycle.size(); ++i) {
+		graph->adjacency[cycle[i - 1]][cycle[i]] -= minimum;
+	}	
+}
+
